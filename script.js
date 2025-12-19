@@ -55,6 +55,9 @@ async function loadProjects() {
 // ================================
 // LOAD ABOUT PAGE FROM CMS
 // ================================
+// ================================
+// LOAD ABOUT PAGE FROM CMS
+// ================================
 async function loadAboutPage() {
     try {
         const response = await fetch('/pages-data.json');
@@ -64,41 +67,85 @@ async function loadAboutPage() {
         }
 
         const pagesData = await response.json();
-        const aboutPage = pagesData.aboutPage;
 
-        if (!aboutPage) {
-            console.error('About page data not found');
-            return;
+        // Update About Page
+        if (pagesData.aboutPage) {
+            const aboutPage = pagesData.aboutPage;
+
+            // Update name in header logo
+            const logoElement = document.querySelector('.logo');
+            if (logoElement && aboutPage.name) {
+                logoElement.textContent = aboutPage.name;
+            }
+
+            // Update about text (combine both paragraphs)
+            const aboutTextDiv = document.querySelector('.about-text');
+            if (aboutTextDiv && aboutPage.content) {
+                const paragraphs = aboutPage.content.split('\n\n').filter(p => p.trim());
+                aboutTextDiv.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+            }
+
+            // Update skills list
+            const skillsList = document.querySelector('.skills ul');
+            if (skillsList && aboutPage.skills && aboutPage.skills.length > 0) {
+                skillsList.innerHTML = aboutPage.skills.map(skill => `<li>${skill}</li>`).join('');
+            }
         }
 
-        // Update name in header logo
-        const logoElement = document.querySelector('.logo');
-        if (logoElement && aboutPage.name) {
-            logoElement.textContent = aboutPage.name;
+        // Update Contact Info
+        if (pagesData.contact) {
+            const contact = pagesData.contact;
+
+            // Update email link
+            const emailLink = document.querySelector('a[href^="mailto:"]');
+            if (emailLink && contact.email) {
+                emailLink.href = `mailto:${contact.email}`;
+                emailLink.querySelector('a[href^="mailto:"]') ?
+                    emailLink.querySelector('a[href^="mailto:"]').textContent = contact.email :
+                    emailLink.textContent = contact.email;
+            }
+
+            // Update LinkedIn link
+            const linkedinLink = document.querySelector('a[href*="linkedin"]');
+            if (linkedinLink && contact.linkedin) {
+                linkedinLink.href = contact.linkedin;
+            }
         }
 
-        // Update name in footer
-        const footerText = document.querySelector('.footer p');
-        if (footerText && aboutPage.name) {
-            const currentYear = new Date().getFullYear();
-            footerText.innerHTML = `&copy; ${currentYear} ${aboutPage.name}. All rights reserved.`;
+        // Update Site Settings
+        if (pagesData.settings) {
+            const settings = pagesData.settings;
+
+            // Update page title
+            if (settings.site_title) {
+                document.title = settings.site_title;
+            }
+
+            // Update hero title
+            const heroTitle = document.querySelector('.hero-title');
+            if (heroTitle && settings.hero_title) {
+                heroTitle.textContent = settings.hero_title;
+            }
+
+            // Update hero subtitle
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+            if (heroSubtitle && settings.hero_subtitle) {
+                heroSubtitle.textContent = settings.hero_subtitle;
+            }
+
+            // Update footer with name and copyright
+            const footerText = document.querySelector('.footer p');
+            if (footerText) {
+                const currentYear = new Date().getFullYear();
+                const name = pagesData.aboutPage?.name || 'Your Name';
+                const copyright = settings.copyright || 'All rights reserved.';
+                footerText.innerHTML = `&copy; ${currentYear} ${name}. ${copyright}`;
+            }
         }
 
-        // Update about text
-        const aboutTextDiv = document.querySelector('.about-text');
-        if (aboutTextDiv && aboutPage.content) {
-            aboutTextDiv.innerHTML = `<p>${aboutPage.content}</p>`;
-        }
-
-        // Update skills list
-        const skillsList = document.querySelector('.skills ul');
-        if (skillsList && aboutPage.skills && aboutPage.skills.length > 0) {
-            skillsList.innerHTML = aboutPage.skills.map(skill => `<li>${skill}</li>`).join('');
-        }
-
-        console.log('About page loaded successfully');
+        console.log('✅ Pages loaded successfully');
     } catch (error) {
-        console.error('Error loading about page:', error);
+        console.error('Error loading pages:', error);
     }
 }
 
