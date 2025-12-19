@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:  # Allows manual trigger
 
+# Required for pushing changes back to repo
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
