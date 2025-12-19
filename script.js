@@ -1,4 +1,67 @@
 // ================================
+// LOAD PROJECTS FROM CMS
+// ================================
+async function loadProjects() {
+    try {
+        const response = await fetch('/projects-data.json');
+        
+        if (!response.ok) {
+            console.error('Failed to load projects');
+            return;
+        }
+        
+        const projects = await response.json();
+        
+        if (projects.length === 0) {
+            document.getElementById('projects-grid').innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                    <p style="font-size: 18px; color: #8B8078;">No projects yet. Add your first project in the admin panel!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Clear existing projects
+        const grid = document.getElementById('projects-grid');
+        grid.innerHTML = '';
+        
+        // Add each project
+        projects.forEach(project => {
+            const projectCard = document.createElement('article');
+            projectCard.className = 'project-card';
+            
+            projectCard.innerHTML = `
+                <div class="project-image">
+                    <img src="${project.image}" alt="${project.title}" loading="lazy">
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-category">${project.category.toUpperCase()} · ${project.year}</p>
+                    <p class="project-description">${project.description}</p>
+                </div>
+            `;
+            
+            grid.appendChild(projectCard);
+        });
+        
+        console.log(`✅ Loaded ${projects.length} projects`);
+        
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        document.getElementById('projects-grid').innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                <p style="font-size: 18px; color: #C67B5C;">Error loading projects. Please refresh the page.</p>
+            </div>
+        `;
+    }
+}
+
+// Load projects when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadProjects();
+});
+
+// ================================
 // PDF GENERATION
 // ================================
 function generatePDF() {
@@ -77,23 +140,26 @@ function generatePDF() {
     });
     element.appendChild(projectsSection);
 
-    // Add about section
-    const aboutSection = document.createElement('div');
-    aboutSection.style.pageBreakBefore = 'always';
-    const aboutText = document.querySelector('.about-text').innerHTML;
-    const skillsList = Array.from(document.querySelectorAll('.skills li')).map(li => li.textContent.trim());
-    
-    aboutSection.innerHTML = `
-        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">About</h2>
-        <div style="font-size: 14px; color: #4A4035; line-height: 1.8; margin-bottom: 30px;">
-            ${aboutText}
-        </div>
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #2C2420; margin-bottom: 15px;">Expertise</h3>
-        <ul style="list-style: none; padding: 0;">
-            ${skillsList.map(skill => `<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">◆ ${skill}</li>`).join('')}
-        </ul>
-    `;
-    element.appendChild(aboutSection);
+    // Add about section if it exists
+    const aboutText = document.querySelector('.about-text');
+    if (aboutText) {
+        const aboutSection = document.createElement('div');
+        aboutSection.style.pageBreakBefore = 'always';
+        
+        const skillsList = Array.from(document.querySelectorAll('.skills li')).map(li => li.textContent.trim());
+        
+        aboutSection.innerHTML = `
+            <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">About</h2>
+            <div style="font-size: 14px; color: #4A4035; line-height: 1.8; margin-bottom: 30px;">
+                ${aboutText.innerHTML}
+            </div>
+            <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #2C2420; margin-bottom: 15px;">Expertise</h3>
+            <ul style="list-style: none; padding: 0;">
+                ${skillsList.map(skill => `<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">◆ ${skill}</li>`).join('')}
+            </ul>
+        `;
+        element.appendChild(aboutSection);
+    }
 
     // Add contact info
     const contactSection = document.createElement('div');
@@ -196,25 +262,23 @@ document.head.appendChild(animationStyles);
 // ================================
 // MOBILE MENU
 // ================================
-document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+
+if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+        this.classList.toggle('active');
+    });
     
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            this.classList.toggle('active');
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
         });
-        
-        // Close menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileMenuToggle.classList.remove('active');
-            });
-        });
-    }
-});
+    });
+}
 
 // ================================
 // SMOOTH SCROLL
@@ -253,20 +317,26 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Observe all project cards and sections
-document.querySelectorAll('.project-card, .about-content, .contact-content').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(el);
-});
+// Observe all project cards and sections (after they're loaded)
+setTimeout(() => {
+    document.querySelectorAll('.project-card, .about-content, .contact-content').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        observer.observe(el);
+    });
+}, 100);
 
 // ================================
 // IMAGE LAZY LOADING ERROR HANDLING
 // ================================
-document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-    img.addEventListener('error', function() {
-        this.src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop';
-        this.alt = 'Architecture project placeholder';
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop';
+                this.alt = 'Architecture project placeholder';
+            });
+        });
+    }, 500);
 });

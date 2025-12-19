@@ -1,18 +1,11 @@
 [build]
-  # Build command (not needed for static site, but required field)
-  command = "echo 'No build needed'"
-  # Directory to publish (the root of your site)
+  # Build command - converts markdown to JSON
+  command = "npm run build"
+  # Directory to publish
   publish = "."
 
-# Enable Netlify Identity for CMS authentication
+# Redirect rules for admin panel
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
-
-# Enable Git Gateway for Decap CMS
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false

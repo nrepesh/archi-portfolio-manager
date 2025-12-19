@@ -1,0 +1,10 @@
+{
+  "name": "architecture-portfolio",
+  "version": "1.0.0",
+  "description": "Architecture portfolio with Decap CMS",
+  "scripts": {
+    "build": "node build-projects.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

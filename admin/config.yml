@@ -1,5 +1,5 @@
 # Decap CMS Configuration
-# Using GitHub Backend (simpler than deprecated Netlify Identity)
+# This file defines what your sister can edit through the admin panel
 
 backend:
   name: git-gateway
@@ -8,11 +8,9 @@ backend:
   identity_url: https://auth.decapbridge.com/sites/1ab1b77e-3c59-41b3-9c17-34868e8b4d7a
   gateway_url: https://gateway.decapbridge.com
 
-# Media storage
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "images/uploads" # Where uploaded images will be stored
+public_folder: "/images/uploads" # Public URL path for images
 
-# Collections (what can be edited)
 collections:
   # PROJECTS COLLECTION
   - name: "projects"
@@ -30,7 +28,7 @@ collections:
       - {label: "Publish Date", name: "date", widget: "datetime", required: true}
       - {label: "Featured", name: "featured", widget: "boolean", default: false, hint: "Show this project prominently on homepage"}
 
-  # PAGES
+  # ABOUT PAGE
   - name: "pages"
     label: "Pages"
     files:
@@ -56,7 +54,7 @@ collections:
           - {label: "Email", name: "email", widget: "string", required: true}
           - {label: "Phone", name: "phone", widget: "string", required: false}
           - {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false}
-          - {label: "Other Link Label", name: "other_label", widget: "string", required: false}
+          - {label: "Other Link Label", name: "other_label", widget: "string", required: false, hint: "e.g., 'Portfolio PDF'"}
           - {label: "Other Link URL", name: "other_url", widget: "string", required: false}
 
       - label: "Site Settings"
