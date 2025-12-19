@@ -8,7 +8,7 @@ const BASE_PATH = '/archi-portfolio-manager';
 // ================================
 async function loadProjects() {
     try {
-        const response = await fetch(BASE_PATH + '/projects-data.json');
+        const response = await fetch(BASE_PATH + '/projects-data.json?v=' + Date.now());
         if (!response.ok) {
             console.error('Failed to load projects');
             return;
@@ -60,7 +60,7 @@ async function loadProjects() {
 // ================================
 async function loadAboutPage() {
     try {
-        const response = await fetch(BASE_PATH + '/pages-data.json');
+        const response = await fetch(BASE_PATH + '/pages-data.json?v=' + Date.now());
         if (!response.ok) {
             console.error('Failed to load pages data');
             return;
