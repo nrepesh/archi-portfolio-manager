@@ -71,6 +71,19 @@ async function loadAboutPage() {
             return;
         }
 
+        // Update name in header logo
+        const logoElement = document.querySelector('.logo');
+        if (logoElement && aboutPage.name) {
+            logoElement.textContent = aboutPage.name;
+        }
+
+        // Update name in footer
+        const footerText = document.querySelector('.footer p');
+        if (footerText && aboutPage.name) {
+            const currentYear = new Date().getFullYear();
+            footerText.innerHTML = `&copy; ${currentYear} ${aboutPage.name}. All rights reserved.`;
+        }
+
         // Update about text
         const aboutTextDiv = document.querySelector('.about-text');
         if (aboutTextDiv && aboutPage.content) {
