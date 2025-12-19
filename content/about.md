@@ -1,5 +1,5 @@
 ---
-name: Nitica
+name: Nitica new
 title: Architectural Engineer
 about_text_1: I am an architectural ENGINEER dedicated to creating sustainable,
   human-centered designs that respond thoughtfully to their environment.
