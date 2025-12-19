@@ -1,8 +1,9 @@
 ---
-name: Nitica new
+name: Ntica Joshi
 title: Architectural Engineer
 about_text_1: I am an architectural ENGINEER dedicated to creating sustainable,
-  human-centered designs that respond thoughtfully to their environment.
+  human-centered designs that respond thoughtfully to their environment. Myrah
+  came back from school today.
 about_text_2: My approach combines technical expertise with a deep respect for
   natural materials and ecological systems, resulting in spaces that are both
   functional and harmonious.
