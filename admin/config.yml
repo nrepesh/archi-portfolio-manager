@@ -5,8 +5,9 @@ backend:
   name: git-gateway
   repo: nrepesh/archi-portfolio-manager
   branch: main
+  identity_url: https://auth.decapbridge.com/sites/1ab1b77e-3c59-41b3-9c17-34868e8b4d7a
+  gateway_url: https://gateway.decapbridge.com
 
-# Add this line:
 site_url: https://nrepesh.github.io/archi-portfolio-manager
 
 media_folder: "images/uploads" # Where uploaded images will be stored
