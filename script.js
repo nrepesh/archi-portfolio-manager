@@ -4,14 +4,13 @@
 async function loadProjects() {
     try {
         const response = await fetch('/projects-data.json');
-        
         if (!response.ok) {
             console.error('Failed to load projects');
             return;
         }
-        
+
         const projects = await response.json();
-        
+
         if (projects.length === 0) {
             document.getElementById('projects-grid').innerHTML = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
@@ -20,16 +19,15 @@ async function loadProjects() {
             `;
             return;
         }
-        
+
         // Clear existing projects
         const grid = document.getElementById('projects-grid');
         grid.innerHTML = '';
-        
+
         // Add each project
         projects.forEach(project => {
             const projectCard = document.createElement('article');
             projectCard.className = 'project-card';
-            
             projectCard.innerHTML = `
                 <div class="project-image">
                     <img src="${project.image}" alt="${project.title}" loading="lazy">
@@ -40,12 +38,10 @@ async function loadProjects() {
                     <p class="project-description">${project.description}</p>
                 </div>
             `;
-            
             grid.appendChild(projectCard);
         });
-        
-        console.log(`✅ Loaded ${projects.length} projects`);
-        
+
+        console.log(`Loaded ${projects.length} projects`);
     } catch (error) {
         console.error('Error loading projects:', error);
         document.getElementById('projects-grid').innerHTML = `
@@ -56,9 +52,47 @@ async function loadProjects() {
     }
 }
 
-// Load projects when page loads
-document.addEventListener('DOMContentLoaded', function() {
+// ================================
+// LOAD ABOUT PAGE FROM CMS
+// ================================
+async function loadAboutPage() {
+    try {
+        const response = await fetch('/pages-data.json');
+        if (!response.ok) {
+            console.error('Failed to load pages data');
+            return;
+        }
+
+        const pagesData = await response.json();
+        const aboutPage = pagesData.aboutPage;
+
+        if (!aboutPage) {
+            console.error('About page data not found');
+            return;
+        }
+
+        // Update about text
+        const aboutTextDiv = document.querySelector('.about-text');
+        if (aboutTextDiv && aboutPage.content) {
+            aboutTextDiv.innerHTML = `<p>${aboutPage.content}</p>`;
+        }
+
+        // Update skills list
+        const skillsList = document.querySelector('.skills ul');
+        if (skillsList && aboutPage.skills && aboutPage.skills.length > 0) {
+            skillsList.innerHTML = aboutPage.skills.map(skill => `<li>${skill}</li>`).join('');
+        }
+
+        console.log('About page loaded successfully');
+    } catch (error) {
+        console.error('Error loading about page:', error);
+    }
+}
+
+// Load projects and about page when page loads
+document.addEventListener('DOMContentLoaded', function () {
     loadProjects();
+    loadAboutPage();
 });
 
 // ================================
@@ -67,14 +101,23 @@ document.addEventListener('DOMContentLoaded', function() {
 function generatePDF() {
     const button = document.getElementById('export-pdf');
     const originalText = button.innerHTML;
-    
+
     // Show loading state
-    button.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="50" stroke-dashoffset="0"/></svg> Generating PDF...';
+    button.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="50" stroke-dashoffset="0"/>
+        </svg>
+        Generating PDF...
+    `;
     button.disabled = true;
 
     // Add spin animation
     const style = document.createElement('style');
-    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    style.textContent = `
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    `;
     document.head.appendChild(style);
 
     // PDF generation options
@@ -82,25 +125,17 @@ function generatePDF() {
         margin: [10, 10, 10, 10],
         filename: 'architecture-portfolio.pdf',
         image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: { 
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            letterRendering: true
-        },
-        jsPDF: { 
-            unit: 'mm', 
-            format: 'a4', 
-            orientation: 'portrait' 
-        },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: 'avoid-all', css: ['page-break-before', 'page-break-after', 'page-break-inside'] },
+        legacy: false
     };
 
     // Elements to include in PDF
     const element = document.createElement('div');
     element.style.padding = '20px';
     element.style.backgroundColor = '#FAF8F3';
-    
+
     // Add header
     const header = document.createElement('div');
     header.innerHTML = `
@@ -115,22 +150,24 @@ function generatePDF() {
 
     // Add projects
     const projectsSection = document.createElement('div');
-    projectsSection.innerHTML = '<h2 style="font-family: \'Cormorant Garamond\', serif; font-size: 28px; color: #2C2420; margin: 30px 0 20px;">Selected Works</h2>';
-    
+    projectsSection.innerHTML = `
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin: 30px 0 20px;">Selected Works</h2>
+    `;
+
     const projects = document.querySelectorAll('.project-card');
     projects.forEach((project, index) => {
         const projectDiv = document.createElement('div');
         projectDiv.style.marginBottom = '30px';
         projectDiv.style.pageBreakInside = 'avoid';
-        
+
         const img = project.querySelector('.project-image img');
         const title = project.querySelector('.project-title').textContent;
         const category = project.querySelector('.project-category').textContent;
         const description = project.querySelector('.project-description').textContent;
-        
+
         projectDiv.innerHTML = `
             <div style="margin-bottom: 20px;">
-                <img src="${img.src}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 15px;" />
+                <img src="${img.src}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 15px;">
                 <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #2C2420; margin-bottom: 8px;">${title}</h3>
                 <p style="font-size: 12px; color: #8B9D83; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">${category}</p>
                 <p style="font-size: 14px; color: #4A4035; line-height: 1.6;">${description}</p>
@@ -145,9 +182,9 @@ function generatePDF() {
     if (aboutText) {
         const aboutSection = document.createElement('div');
         aboutSection.style.pageBreakBefore = 'always';
-        
+
         const skillsList = Array.from(document.querySelectorAll('.skills li')).map(li => li.textContent.trim());
-        
+
         aboutSection.innerHTML = `
             <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">About</h2>
             <div style="font-size: 14px; color: #4A4035; line-height: 1.8; margin-bottom: 30px;">
@@ -155,7 +192,7 @@ function generatePDF() {
             </div>
             <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #2C2420; margin-bottom: 15px;">Expertise</h3>
             <ul style="list-style: none; padding: 0;">
-                ${skillsList.map(skill => `<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">◆ ${skill}</li>`).join('')}
+                ${skillsList.map(skill => `<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">${skill}</li>`).join('')}
             </ul>
         `;
         element.appendChild(aboutSection);
@@ -168,7 +205,7 @@ function generatePDF() {
     contactSection.style.padding = '20px';
     contactSection.style.backgroundColor = '#F5F1E8';
     contactSection.style.borderRadius = '4px';
-    
+
     const contactLinks = document.querySelectorAll('.contact-link');
     const contactInfo = Array.from(contactLinks).map(link => {
         if (link.href.startsWith('mailto:')) {
@@ -177,7 +214,7 @@ function generatePDF() {
             return link.textContent.trim();
         }
     }).join(' | ');
-    
+
     contactSection.innerHTML = `
         <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #2C2420; margin-bottom: 15px;">Contact</h3>
         <p style="font-size: 14px; color: #4A4035;">${contactInfo}</p>
@@ -193,7 +230,6 @@ function generatePDF() {
             // Reset button
             button.innerHTML = originalText;
             button.disabled = false;
-            
             // Show success message
             showNotification('PDF downloaded successfully!');
         })
@@ -224,9 +260,8 @@ function showNotification(message, type = 'success') {
         font-family: 'Work Sans', sans-serif;
         animation: slideIn 0.3s ease-out;
     `;
-    
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease-out';
         setTimeout(() => notification.remove(), 300);
@@ -237,24 +272,12 @@ function showNotification(message, type = 'success') {
 const animationStyles = document.createElement('style');
 animationStyles.textContent = `
     @keyframes slideIn {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
     }
     @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
     }
 `;
 document.head.appendChild(animationStyles);
@@ -266,11 +289,11 @@ const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 
 if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', function() {
+    mobileMenuToggle.addEventListener('click', function () {
         navLinks.classList.toggle('active');
         this.classList.toggle('active');
     });
-    
+
     // Close menu when clicking a link
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
@@ -291,7 +314,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             const headerOffset = 80;
             const elementPosition = target.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
             window.scrollTo({
                 top: offsetPosition,
                 behavior: 'smooth'
@@ -330,10 +352,10 @@ setTimeout(() => {
 // ================================
 // IMAGE LAZY LOADING ERROR HANDLING
 // ================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
         document.querySelectorAll('img[loading="lazy"]').forEach(img => {
-            img.addEventListener('error', function() {
+            img.addEventListener('error', function () {
                 this.src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop';
                 this.alt = 'Architecture project placeholder';
             });
