@@ -1,0 +1,28 @@
+{
+  "aboutPage": {
+    "name": "Nitica",
+    "title": "Architectural Engineer",
+    "content": "I am an architectural ENGINEER dedicated to creating sustainable,\n\nMy approach combines technical expertise with a deep respect for",
+    "skills": [
+      "Sustainable Design & Green Building",
+      "Structural Engineering",
+      "Building Information Modeling (BIM)",
+      "Energy Efficiency Analysis",
+      "Natural Material Integration"
+    ],
+    "profile_image": "/archi-portfolio-manager/images/uploads/welkin_fp_a4.webp"
+  },
+  "contact": {
+    "email": "your.email@example.com",
+    "phone": "",
+    "linkedin": "https://linkedin.com/in/yourprofile",
+    "other_label": "",
+    "other_url": ""
+  },
+  "settings": {
+    "site_title": "Architecture Portfolio",
+    "hero_title": "Architectural Engineering",
+    "hero_subtitle": "Designing sustainable spaces in harmony with nature",
+    "copyright": "All rights reserved."
+  }
+}
