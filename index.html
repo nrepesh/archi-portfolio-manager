@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Architecture portfolio showcasing sustainable and innovative design projects">
+    <title>Architecture Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <h1 class="logo">Your Name</h1>
+                <div class="nav-links">
+                    <a href="#projects">Projects</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Architectural Engineering</h2>
+                <p class="hero-subtitle">Designing sustainable spaces in harmony with nature</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF Export Section -->
+    <section class="export-section">
+        <div class="container">
+            <p class="export-text">View my complete portfolio</p>
+            <button class="export-btn" id="export-pdf" onclick="generatePDF()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 14L5 9H8V3H12V9H15L10 14Z" fill="currentColor"/>
+                    <path d="M17 16V17H3V16H17Z" fill="currentColor"/>
+                </svg>
+                Download Portfolio PDF
+            </button>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <h2 class="section-title">Selected Works</h2>
+            
+            <div class="projects-grid" id="projects-grid">
+                <!-- Projects will be loaded here from CMS -->
+                <!-- Placeholder content below -->
+                <article class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop" alt="Sustainable residential building" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Eco-Friendly Residence</h3>
+                        <p class="project-category">Residential · 2024</p>
+                        <p class="project-description">A sustainable home design incorporating passive solar heating, natural ventilation, and locally-sourced materials to minimize environmental impact.</p>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop" alt="Community center design" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Community Gathering Space</h3>
+                        <p class="project-category">Public · 2023</p>
+                        <p class="project-description">Mixed-use community center featuring open-plan design, green roofs, and natural light optimization for year-round comfort.</p>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800&h=600&fit=crop" alt="Office renovation project" loading="lazy">
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Adaptive Office Renovation</h3>
+                        <p class="project-category">Commercial · 2023</p>
+                        <p class="project-description">Transformation of historic building into modern workspace while preserving architectural heritage and improving energy efficiency.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2 class="section-title">About</h2>
+                    <div class="about-text">
+                        <p>I am an architectural engineer dedicated to creating sustainable, human-centered designs that respond thoughtfully to their environment.</p>
+                        <p>My approach combines technical expertise with a deep respect for natural materials and ecological systems, resulting in spaces that are both functional and harmonious.</p>
+                    </div>
+                    <div class="skills">
+                        <h3>Expertise</h3>
+                        <ul>
+                            <li>Sustainable Design & Green Building</li>
+                            <li>Structural Engineering</li>
+                            <li>Building Information Modeling (BIM)</li>
+                            <li>Energy Efficiency Analysis</li>
+                            <li>Natural Material Integration</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600&h=800&fit=crop" alt="Architecture sketches and materials" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="contact-intro">Interested in collaborating or learning more about my work?</p>
+                <div class="contact-info">
+                    <a href="mailto:your.email@example.com" class="contact-link">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        your.email@example.com
+                    </a>
+                    <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank" rel="noopener">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 9H2V21H6V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        LinkedIn Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

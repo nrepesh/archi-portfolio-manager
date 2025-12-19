@@ -1,0 +1,67 @@
+# Decap CMS Configuration
+# This file defines what your sister can edit through the admin panel
+
+backend:
+  name: git-gateway
+  branch: main # Change this to your default branch if different (could be 'master')
+
+# Uncomment the following line if you want to use local testing
+# local_backend: true
+
+media_folder: "images/uploads" # Where uploaded images will be stored
+public_folder: "/images/uploads" # Public URL path for images
+
+collections:
+  # PROJECTS COLLECTION
+  - name: "projects"
+    label: "Projects"
+    label_singular: "Project"
+    folder: "content/projects"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Project Title", name: "title", widget: "string", required: true}
+      - {label: "Category", name: "category", widget: "select", options: ["Residential", "Commercial", "Public", "Mixed-Use", "Renovation", "Other"], required: true}
+      - {label: "Year", name: "year", widget: "string", required: true}
+      - {label: "Featured Image", name: "image", widget: "image", required: true}
+      - {label: "Description", name: "description", widget: "text", required: true}
+      - {label: "Publish Date", name: "date", widget: "datetime", required: true}
+      - {label: "Featured", name: "featured", widget: "boolean", default: false, hint: "Show this project prominently on homepage"}
+
+  # ABOUT PAGE
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "About Page"
+        name: "about"
+        file: "content/about.md"
+        fields:
+          - {label: "Your Name", name: "name", widget: "string", required: true}
+          - {label: "Professional Title", name: "title", widget: "string", default: "Architectural Engineer"}
+          - {label: "About Text Paragraph 1", name: "about_text_1", widget: "text", required: true}
+          - {label: "About Text Paragraph 2", name: "about_text_2", widget: "text", required: true}
+          - {label: "Profile Image", name: "profile_image", widget: "image"}
+          - label: "Skills/Expertise"
+            name: "skills"
+            widget: "list"
+            required: true
+            field: {label: "Skill", name: "skill", widget: "string"}
+
+      - label: "Contact Information"
+        name: "contact"
+        file: "content/contact.md"
+        fields:
+          - {label: "Email", name: "email", widget: "string", required: true}
+          - {label: "Phone", name: "phone", widget: "string", required: false}
+          - {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false}
+          - {label: "Other Link Label", name: "other_label", widget: "string", required: false, hint: "e.g., 'Portfolio PDF'"}
+          - {label: "Other Link URL", name: "other_url", widget: "string", required: false}
+
+      - label: "Site Settings"
+        name: "settings"
+        file: "content/settings.md"
+        fields:
+          - {label: "Site Title", name: "site_title", widget: "string", default: "Architecture Portfolio"}
+          - {label: "Hero Title", name: "hero_title", widget: "string", default: "Architectural Engineering"}
+          - {label: "Hero Subtitle", name: "hero_subtitle", widget: "string", default: "Designing sustainable spaces in harmony with nature"}
+          - {label: "Footer Copyright Text", name: "copyright", widget: "string", default: "All rights reserved."}
