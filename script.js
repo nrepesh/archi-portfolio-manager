@@ -1,9 +1,16 @@
 // ================================
+// CONFIGURATION - GITHUB PAGES BASE PATH
+// ================================
+// Change this to '' if hosting at root domain (like Netlify)
+// Keep as '/archi-portfolio-manager' for GitHub Pages project sites
+const BASE_PATH = '/archi-portfolio-manager';
+
+// ================================
 // LOAD PROJECTS FROM CMS
 // ================================
 async function loadProjects() {
     try {
-        const response = await fetch('/projects-data.json');
+        const response = await fetch(`${BASE_PATH}/projects-data.json`);
         if (!response.ok) {
             console.error('Failed to load projects');
             return;
@@ -41,7 +48,7 @@ async function loadProjects() {
             grid.appendChild(projectCard);
         });
 
-        console.log(`Loaded ${projects.length} projects`);
+        console.log(`✅ Loaded ${projects.length} projects`);
     } catch (error) {
         console.error('Error loading projects:', error);
         document.getElementById('projects-grid').innerHTML = `
@@ -53,14 +60,11 @@ async function loadProjects() {
 }
 
 // ================================
-// LOAD ABOUT PAGE FROM CMS
-// ================================
-// ================================
-// LOAD ABOUT PAGE FROM CMS
+// LOAD PAGES DATA FROM CMS
 // ================================
 async function loadAboutPage() {
     try {
-        const response = await fetch('/pages-data.json');
+        const response = await fetch(`${BASE_PATH}/pages-data.json`);
         if (!response.ok) {
             console.error('Failed to load pages data');
             return;
@@ -90,6 +94,13 @@ async function loadAboutPage() {
             if (skillsList && aboutPage.skills && aboutPage.skills.length > 0) {
                 skillsList.innerHTML = aboutPage.skills.map(skill => `<li>${skill}</li>`).join('');
             }
+
+            // Update profile image if provided
+            const aboutImage = document.querySelector('.about-image img');
+            if (aboutImage && aboutPage.profile_image) {
+                aboutImage.src = aboutPage.profile_image;
+                aboutImage.alt = `${aboutPage.name} - ${aboutPage.title || 'Profile'}`;
+            }
         }
 
         // Update Contact Info
@@ -100,9 +111,18 @@ async function loadAboutPage() {
             const emailLink = document.querySelector('a[href^="mailto:"]');
             if (emailLink && contact.email) {
                 emailLink.href = `mailto:${contact.email}`;
-                emailLink.querySelector('a[href^="mailto:"]') ?
-                    emailLink.querySelector('a[href^="mailto:"]').textContent = contact.email :
-                    emailLink.textContent = contact.email;
+                // Find the text node and update it
+                const textSpan = emailLink.childNodes;
+                for (let node of textSpan) {
+                    if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('@')) {
+                        node.textContent = contact.email;
+                        break;
+                    }
+                }
+                // Fallback: if no text node found, check last child
+                if (emailLink.lastChild && emailLink.lastChild.nodeType === Node.TEXT_NODE) {
+                    emailLink.lastChild.textContent = '\n                        ' + contact.email + '\n                    ';
+                }
             }
 
             // Update LinkedIn link
@@ -143,7 +163,7 @@ async function loadAboutPage() {
             }
         }
 
-        console.log('✅ Pages loaded successfully');
+        console.log('✅ Pages data loaded successfully');
     } catch (error) {
         console.error('Error loading pages:', error);
     }
@@ -211,7 +231,7 @@ function generatePDF() {
     // Add projects
     const projectsSection = document.createElement('div');
     projectsSection.innerHTML = `
-        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin: 30px 0 20px;">Selected Works</h2>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">Selected Works</h2>
     `;
 
     const projects = document.querySelectorAll('.project-card');
