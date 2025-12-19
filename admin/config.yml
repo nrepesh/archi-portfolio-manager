@@ -1,16 +1,16 @@
 # Decap CMS Configuration
-# This file defines what your sister can edit through the admin panel
+# Using GitHub Backend (simpler than deprecated Netlify Identity)
 
 backend:
-  name: git-gateway
-  branch: main # Change this to your default branch if different (could be 'master')
+  name: github
+  repo: nrepesh/archi-portfolio-manager  # REPLACE with your GitHub username and repo name
+  branch: main  # Change to 'master' if that's your default branch
 
-# Uncomment the following line if you want to use local testing
-# local_backend: true
+# Media storage
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
 
-media_folder: "images/uploads" # Where uploaded images will be stored
-public_folder: "/images/uploads" # Public URL path for images
-
+# Collections (what can be edited)
 collections:
   # PROJECTS COLLECTION
   - name: "projects"
@@ -28,7 +28,7 @@ collections:
       - {label: "Publish Date", name: "date", widget: "datetime", required: true}
       - {label: "Featured", name: "featured", widget: "boolean", default: false, hint: "Show this project prominently on homepage"}
 
-  # ABOUT PAGE
+  # PAGES
   - name: "pages"
     label: "Pages"
     files:
@@ -54,7 +54,7 @@ collections:
           - {label: "Email", name: "email", widget: "string", required: true}
           - {label: "Phone", name: "phone", widget: "string", required: false}
           - {label: "LinkedIn URL", name: "linkedin", widget: "string", required: false}
-          - {label: "Other Link Label", name: "other_label", widget: "string", required: false, hint: "e.g., 'Portfolio PDF'"}
+          - {label: "Other Link Label", name: "other_label", widget: "string", required: false}
           - {label: "Other Link URL", name: "other_url", widget: "string", required: false}
 
       - label: "Site Settings"
