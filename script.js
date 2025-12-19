@@ -1,8 +1,6 @@
 // ================================
 // CONFIGURATION - GITHUB PAGES BASE PATH
 // ================================
-// Change this to '' if hosting at root domain (like Netlify)
-// Keep as '/archi-portfolio-manager' for GitHub Pages project sites
 const BASE_PATH = '/archi-portfolio-manager';
 
 // ================================
@@ -10,7 +8,7 @@ const BASE_PATH = '/archi-portfolio-manager';
 // ================================
 async function loadProjects() {
     try {
-        const response = await fetch(`${BASE_PATH}/projects-data.json`);
+        const response = await fetch(BASE_PATH + '/projects-data.json');
         if (!response.ok) {
             console.error('Failed to load projects');
             return;
@@ -27,11 +25,9 @@ async function loadProjects() {
             return;
         }
 
-        // Clear existing projects
         const grid = document.getElementById('projects-grid');
         grid.innerHTML = '';
 
-        // Add each project
         projects.forEach(project => {
             const projectCard = document.createElement('article');
             projectCard.className = 'project-card';
@@ -48,7 +44,7 @@ async function loadProjects() {
             grid.appendChild(projectCard);
         });
 
-        console.log(`✅ Loaded ${projects.length} projects`);
+        console.log('Loaded ' + projects.length + ' projects');
     } catch (error) {
         console.error('Error loading projects:', error);
         document.getElementById('projects-grid').innerHTML = `
@@ -64,7 +60,7 @@ async function loadProjects() {
 // ================================
 async function loadAboutPage() {
     try {
-        const response = await fetch(`${BASE_PATH}/pages-data.json`);
+        const response = await fetch(BASE_PATH + '/pages-data.json');
         if (!response.ok) {
             console.error('Failed to load pages data');
             return;
@@ -82,24 +78,24 @@ async function loadAboutPage() {
                 logoElement.textContent = aboutPage.name;
             }
 
-            // Update about text (combine both paragraphs)
+            // Update about text
             const aboutTextDiv = document.querySelector('.about-text');
             if (aboutTextDiv && aboutPage.content) {
                 const paragraphs = aboutPage.content.split('\n\n').filter(p => p.trim());
-                aboutTextDiv.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+                aboutTextDiv.innerHTML = paragraphs.map(p => '<p>' + p + '</p>').join('');
             }
 
             // Update skills list
             const skillsList = document.querySelector('.skills ul');
             if (skillsList && aboutPage.skills && aboutPage.skills.length > 0) {
-                skillsList.innerHTML = aboutPage.skills.map(skill => `<li>${skill}</li>`).join('');
+                skillsList.innerHTML = aboutPage.skills.map(skill => '<li>' + skill + '</li>').join('');
             }
 
-            // Update profile image if provided
+            // Update profile image
             const aboutImage = document.querySelector('.about-image img');
             if (aboutImage && aboutPage.profile_image) {
                 aboutImage.src = aboutPage.profile_image;
-                aboutImage.alt = `${aboutPage.name} - ${aboutPage.title || 'Profile'}`;
+                aboutImage.alt = aboutPage.name + ' - Profile';
             }
         }
 
@@ -107,25 +103,17 @@ async function loadAboutPage() {
         if (pagesData.contact) {
             const contact = pagesData.contact;
 
-            // Update email link
             const emailLink = document.querySelector('a[href^="mailto:"]');
             if (emailLink && contact.email) {
-                emailLink.href = `mailto:${contact.email}`;
-                // Find the text node and update it
-                const textSpan = emailLink.childNodes;
-                for (let node of textSpan) {
-                    if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('@')) {
-                        node.textContent = contact.email;
-                        break;
-                    }
-                }
-                // Fallback: if no text node found, check last child
-                if (emailLink.lastChild && emailLink.lastChild.nodeType === Node.TEXT_NODE) {
-                    emailLink.lastChild.textContent = '\n                        ' + contact.email + '\n                    ';
+                emailLink.href = 'mailto:' + contact.email;
+                const svg = emailLink.querySelector('svg');
+                if (svg) {
+                    emailLink.innerHTML = '';
+                    emailLink.appendChild(svg);
+                    emailLink.appendChild(document.createTextNode(' ' + contact.email));
                 }
             }
 
-            // Update LinkedIn link
             const linkedinLink = document.querySelector('a[href*="linkedin"]');
             if (linkedinLink && contact.linkedin) {
                 linkedinLink.href = contact.linkedin;
@@ -136,40 +124,36 @@ async function loadAboutPage() {
         if (pagesData.settings) {
             const settings = pagesData.settings;
 
-            // Update page title
             if (settings.site_title) {
                 document.title = settings.site_title;
             }
 
-            // Update hero title
             const heroTitle = document.querySelector('.hero-title');
             if (heroTitle && settings.hero_title) {
                 heroTitle.textContent = settings.hero_title;
             }
 
-            // Update hero subtitle
             const heroSubtitle = document.querySelector('.hero-subtitle');
             if (heroSubtitle && settings.hero_subtitle) {
                 heroSubtitle.textContent = settings.hero_subtitle;
             }
 
-            // Update footer with name and copyright
             const footerText = document.querySelector('.footer p');
             if (footerText) {
                 const currentYear = new Date().getFullYear();
                 const name = pagesData.aboutPage?.name || 'Your Name';
                 const copyright = settings.copyright || 'All rights reserved.';
-                footerText.innerHTML = `&copy; ${currentYear} ${name}. ${copyright}`;
+                footerText.innerHTML = '&copy; ' + currentYear + ' ' + name + '. ' + copyright;
             }
         }
 
-        console.log('✅ Pages data loaded successfully');
+        console.log('Pages data loaded successfully');
     } catch (error) {
         console.error('Error loading pages:', error);
     }
 }
 
-// Load projects and about page when page loads
+// Load data when page loads
 document.addEventListener('DOMContentLoaded', function () {
     loadProjects();
     loadAboutPage();
@@ -182,60 +166,35 @@ function generatePDF() {
     const button = document.getElementById('export-pdf');
     const originalText = button.innerHTML;
 
-    // Show loading state
-    button.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;">
-            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="50" stroke-dashoffset="0"/>
-        </svg>
-        Generating PDF...
-    `;
+    button.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="50" stroke-dashoffset="0"/></svg> Generating PDF...';
     button.disabled = true;
 
-    // Add spin animation
     const style = document.createElement('style');
-    style.textContent = `
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    `;
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
     document.head.appendChild(style);
 
-    // PDF generation options
     const options = {
         margin: [10, 10, 10, 10],
         filename: 'architecture-portfolio.pdf',
         image: { type: 'jpeg', quality: 0.95 },
         html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: 'avoid-all', css: ['page-break-before', 'page-break-after', 'page-break-inside'] },
+        pagebreak: { mode: 'avoid-all' },
         legacy: false
     };
 
-    // Elements to include in PDF
     const element = document.createElement('div');
     element.style.padding = '20px';
     element.style.backgroundColor = '#FAF8F3';
 
-    // Add header
     const header = document.createElement('div');
-    header.innerHTML = `
-        <div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #E8DCC4;">
-            <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: #2C2420; margin-bottom: 10px;">
-                ${document.querySelector('.logo').textContent}
-            </h1>
-            <p style="font-size: 16px; color: #4A4035;">Architectural Engineering Portfolio</p>
-        </div>
-    `;
+    header.innerHTML = '<div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #E8DCC4;"><h1 style="font-family: Cormorant Garamond, serif; font-size: 36px; font-weight: 300; color: #2C2420; margin-bottom: 10px;">' + document.querySelector('.logo').textContent + '</h1><p style="font-size: 16px; color: #4A4035;">Architectural Engineering Portfolio</p></div>';
     element.appendChild(header);
 
-    // Add projects
     const projectsSection = document.createElement('div');
-    projectsSection.innerHTML = `
-        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">Selected Works</h2>
-    `;
+    projectsSection.innerHTML = '<h2 style="font-family: Cormorant Garamond, serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">Selected Works</h2>';
 
-    const projects = document.querySelectorAll('.project-card');
-    projects.forEach((project, index) => {
+    document.querySelectorAll('.project-card').forEach(project => {
         const projectDiv = document.createElement('div');
         projectDiv.style.marginBottom = '30px';
         projectDiv.style.pageBreakInside = 'avoid';
@@ -245,40 +204,20 @@ function generatePDF() {
         const category = project.querySelector('.project-category').textContent;
         const description = project.querySelector('.project-description').textContent;
 
-        projectDiv.innerHTML = `
-            <div style="margin-bottom: 20px;">
-                <img src="${img.src}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 15px;">
-                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #2C2420; margin-bottom: 8px;">${title}</h3>
-                <p style="font-size: 12px; color: #8B9D83; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">${category}</p>
-                <p style="font-size: 14px; color: #4A4035; line-height: 1.6;">${description}</p>
-            </div>
-        `;
+        projectDiv.innerHTML = '<div style="margin-bottom: 20px;"><img src="' + img.src + '" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 15px;"><h3 style="font-family: Cormorant Garamond, serif; font-size: 22px; color: #2C2420; margin-bottom: 8px;">' + title + '</h3><p style="font-size: 12px; color: #8B9D83; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">' + category + '</p><p style="font-size: 14px; color: #4A4035; line-height: 1.6;">' + description + '</p></div>';
         projectsSection.appendChild(projectDiv);
     });
     element.appendChild(projectsSection);
 
-    // Add about section if it exists
     const aboutText = document.querySelector('.about-text');
     if (aboutText) {
         const aboutSection = document.createElement('div');
         aboutSection.style.pageBreakBefore = 'always';
-
         const skillsList = Array.from(document.querySelectorAll('.skills li')).map(li => li.textContent.trim());
-
-        aboutSection.innerHTML = `
-            <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">About</h2>
-            <div style="font-size: 14px; color: #4A4035; line-height: 1.8; margin-bottom: 30px;">
-                ${aboutText.innerHTML}
-            </div>
-            <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #2C2420; margin-bottom: 15px;">Expertise</h3>
-            <ul style="list-style: none; padding: 0;">
-                ${skillsList.map(skill => `<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">${skill}</li>`).join('')}
-            </ul>
-        `;
+        aboutSection.innerHTML = '<h2 style="font-family: Cormorant Garamond, serif; font-size: 28px; color: #2C2420; margin-bottom: 20px;">About</h2><div style="font-size: 14px; color: #4A4035; line-height: 1.8; margin-bottom: 30px;">' + aboutText.innerHTML + '</div><h3 style="font-family: Cormorant Garamond, serif; font-size: 20px; color: #2C2420; margin-bottom: 15px;">Expertise</h3><ul style="list-style: none; padding: 0;">' + skillsList.map(skill => '<li style="padding: 8px 0; border-bottom: 1px solid #E8DCC4; font-size: 14px; color: #4A4035;">' + skill + '</li>').join('') + '</ul>';
         element.appendChild(aboutSection);
     }
 
-    // Add contact info
     const contactSection = document.createElement('div');
     contactSection.style.marginTop = '40px';
     contactSection.style.textAlign = 'center';
@@ -286,80 +225,43 @@ function generatePDF() {
     contactSection.style.backgroundColor = '#F5F1E8';
     contactSection.style.borderRadius = '4px';
 
-    const contactLinks = document.querySelectorAll('.contact-link');
-    const contactInfo = Array.from(contactLinks).map(link => {
-        if (link.href.startsWith('mailto:')) {
-            return `Email: ${link.textContent.trim()}`;
-        } else {
-            return link.textContent.trim();
-        }
+    const contactInfo = Array.from(document.querySelectorAll('.contact-link')).map(link => {
+        if (link.href.startsWith('mailto:')) return 'Email: ' + link.textContent.trim();
+        return link.textContent.trim();
     }).join(' | ');
 
-    contactSection.innerHTML = `
-        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #2C2420; margin-bottom: 15px;">Contact</h3>
-        <p style="font-size: 14px; color: #4A4035;">${contactInfo}</p>
-    `;
+    contactSection.innerHTML = '<h3 style="font-family: Cormorant Garamond, serif; font-size: 22px; color: #2C2420; margin-bottom: 15px;">Contact</h3><p style="font-size: 14px; color: #4A4035;">' + contactInfo + '</p>';
     element.appendChild(contactSection);
 
-    // Generate PDF
-    html2pdf()
-        .set(options)
-        .from(element)
-        .save()
-        .then(() => {
-            // Reset button
-            button.innerHTML = originalText;
-            button.disabled = false;
-            // Show success message
-            showNotification('PDF downloaded successfully!');
-        })
-        .catch((error) => {
-            console.error('PDF generation error:', error);
-            button.innerHTML = originalText;
-            button.disabled = false;
-            showNotification('Error generating PDF. Please try again.', 'error');
-        });
+    html2pdf().set(options).from(element).save().then(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+        showNotification('PDF downloaded successfully!');
+    }).catch(error => {
+        console.error('PDF generation error:', error);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        showNotification('Error generating PDF. Please try again.', 'error');
+    });
 }
 
 // ================================
 // NOTIFICATION SYSTEM
 // ================================
-function showNotification(message, type = 'success') {
+function showNotification(message, type) {
+    type = type || 'success';
     const notification = document.createElement('div');
     notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: ${type === 'success' ? '#8B9D83' : '#C67B5C'};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 4px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        z-index: 10000;
-        font-family: 'Work Sans', sans-serif;
-        animation: slideIn 0.3s ease-out;
-    `;
+    notification.style.cssText = 'position: fixed; bottom: 30px; right: 30px; background: ' + (type === 'success' ? '#8B9D83' : '#C67B5C') + '; color: white; padding: 15px 25px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 10000; font-family: Work Sans, sans-serif; animation: slideIn 0.3s ease-out;';
     document.body.appendChild(notification);
-
-    setTimeout(() => {
+    setTimeout(function () {
         notification.style.animation = 'slideOut 0.3s ease-out';
-        setTimeout(() => notification.remove(), 300);
+        setTimeout(function () { notification.remove(); }, 300);
     }, 3000);
 }
 
-// Add animation styles
 const animationStyles = document.createElement('style');
-animationStyles.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(400px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(400px); opacity: 0; }
-    }
-`;
+animationStyles.textContent = '@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } } @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(400px); opacity: 0; } }';
 document.head.appendChild(animationStyles);
 
 // ================================
@@ -374,9 +276,8 @@ if (mobileMenuToggle) {
         this.classList.toggle('active');
     });
 
-    // Close menu when clicking a link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
+    document.querySelectorAll('.nav-links a').forEach(function (link) {
+        link.addEventListener('click', function () {
             navLinks.classList.remove('active');
             mobileMenuToggle.classList.remove('active');
         });
@@ -386,7 +287,7 @@ if (mobileMenuToggle) {
 // ================================
 // SMOOTH SCROLL
 // ================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
@@ -394,10 +295,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             const headerOffset = 80;
             const elementPosition = target.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
     });
 });
@@ -405,13 +303,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // ================================
 // INTERSECTION OBSERVER FOR ANIMATIONS
 // ================================
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+const observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
         if (entry.isIntersecting) {
             entry.target.style.opacity = '1';
             entry.target.style.transform = 'translateY(0)';
@@ -419,9 +314,8 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, observerOptions);
 
-// Observe all project cards and sections (after they're loaded)
-setTimeout(() => {
-    document.querySelectorAll('.project-card, .about-content, .contact-content').forEach(el => {
+setTimeout(function () {
+    document.querySelectorAll('.project-card, .about-content, .contact-content').forEach(function (el) {
         el.style.opacity = '0';
         el.style.transform = 'translateY(30px)';
         el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
@@ -430,11 +324,11 @@ setTimeout(() => {
 }, 100);
 
 // ================================
-// IMAGE LAZY LOADING ERROR HANDLING
+// IMAGE ERROR HANDLING
 // ================================
 document.addEventListener('DOMContentLoaded', function () {
-    setTimeout(() => {
-        document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+    setTimeout(function () {
+        document.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
             img.addEventListener('error', function () {
                 this.src = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop';
                 this.alt = 'Architecture project placeholder';
