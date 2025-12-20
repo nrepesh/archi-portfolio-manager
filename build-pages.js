@@ -19,11 +19,27 @@ function parseFrontMatter(content) {
     let currentList = [];
     let inList = false;
     let inMultiLine = false;
+    let inBlockScalar = false; // For >- or | style blocks
 
     lines.forEach(line => {
         const trimmedLine = line.trim();
         const isIndented = line.startsWith('  ') || line.startsWith('\t');
         const hasColon = line.includes(':') && !isIndented;
+
+        // Handle block scalar continuation (>- or | style)
+        if (isIndented && inBlockScalar && currentKey) {
+            if (trimmedLine === '') {
+                // Empty line in block = paragraph break
+                currentValue += '\n\n';
+            } else {
+                // Add space if we have content, otherwise start fresh
+                if (currentValue && !currentValue.endsWith('\n\n')) {
+                    currentValue += ' ';
+                }
+                currentValue += trimmedLine;
+            }
+            return;
+        }
 
         // Handle multi-line continuation (indented lines that aren't list items)
         if (isIndented && !trimmedLine.startsWith('-') && inMultiLine && currentKey) {
@@ -31,12 +47,13 @@ function parseFrontMatter(content) {
             return;
         }
 
-        // Save previous multi-line value
-        if (inMultiLine && currentKey && currentValue) {
-            frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '');
+        // Save previous value (block scalar or multi-line)
+        if ((inMultiLine || inBlockScalar) && currentKey && currentValue) {
+            frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '').trim();
             currentKey = null;
             currentValue = '';
             inMultiLine = false;
+            inBlockScalar = false;
         }
 
         // Check if starting a new key
@@ -55,6 +72,10 @@ function parseFrontMatter(content) {
             if (value === '') {
                 // Could be a list or empty value
                 inList = true;
+            } else if (value === '>-' || value === '>' || value === '|-' || value === '|') {
+                // Block scalar indicator - content follows on next lines
+                inBlockScalar = true;
+                currentValue = '';
             } else {
                 // Check if value might continue on next line
                 inMultiLine = true;
@@ -69,9 +90,9 @@ function parseFrontMatter(content) {
         }
     });
 
-    // Handle final multi-line value
-    if (inMultiLine && currentKey && currentValue) {
-        frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '');
+    // Handle final multi-line value or block scalar
+    if ((inMultiLine || inBlockScalar) && currentKey && currentValue) {
+        frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '').trim();
     }
 
     // Handle final list

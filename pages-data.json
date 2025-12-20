@@ -2,7 +2,7 @@
   "aboutPage": {
     "name": "Nitica Joshi",
     "title": "Architectural Engineer",
-    "content": "I am an architectural engineer dedicated to creating sustainable, human-centered designs that respond thoughtfully to their environment. \n\nMy approach combines technical expertise with a deep respect for natural materials and ecological systems, resulting in spaces that are both functional and harmonious.",
+    "content": "I am an architectural engineer dedicated to creating sustainable, human-centered designs that respond thoughtfully to their environment.\n\nMy approach combines technical expertise with a deep respect for natural materials and ecological systems, resulting in spaces that are both functional and harmonious. THis isi a long text why this this not working",
     "skills": [
       "Sustainable Design & Green Building",
       "Structural Engineering",
@@ -10,7 +10,7 @@
       "Energy Efficiency Analysis",
       "Natural Material Integration"
     ],
-    "profile_image": "/archi-portfolio-manager/images/uploads/welkin_fp_a4.webp"
+    "profile_image": "https://www.opengroup.org/sites/default/files/iStock-157675600_0.jpeg"
   },
   "contact": {
     "email": "your.email@example.com",
