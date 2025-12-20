@@ -1,5 +1,14 @@
 [
   {
+    "title": "New title ",
+    "category": "Commercial",
+    "year": "2025",
+    "image": "/archi-portfolio-manager/images/uploads/welkin_fp_a4.webp",
+    "description": "hello ",
+    "date": "2025-12-20T13:04:00.000-08:00",
+    "featured": false
+  },
+  {
     "title": "Eco-Friendly Residence",
     "category": "Residential",
     "year": "2024",

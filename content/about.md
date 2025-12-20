@@ -6,9 +6,7 @@ about_text_1: "I am an architectural engineer dedicated to creating sustainable,
 about_text_2: >-
   My approach combines technical expertise with a deep respect for natural
   materials and ecological systems, resulting in spaces that are both functional
-  and harmonious. THis isi a long text why this this not working 
-
-  proach combines technical expertise with a deep respect for natural materials and ecological systems, resulting in spaces that are both functional and harmonious. THis isi a long text why this this not working 
+  and harmonious. THis isi a long text why this this not working for real proach combines technical expertise with a deep respect for natural materials and ecological systems, resulting in spaces that are both functional and harmonious. THis isi a long text why this this not working 
 profile_image: https://www.opengroup.org/sites/default/files/iStock-157675600_0.jpeg
 skills:
   - skill: Sustainable Design & Green Building
