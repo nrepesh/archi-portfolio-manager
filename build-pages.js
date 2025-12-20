@@ -15,12 +15,33 @@ function parseFrontMatter(content) {
     const frontMatter = {};
     const lines = match[1].split('\n');
     let currentKey = null;
+    let currentValue = '';
     let currentList = [];
     let inList = false;
+    let inMultiLine = false;
 
     lines.forEach(line => {
-        // Check if starting a list
-        if (line.includes(':') && !line.trim().startsWith('-')) {
+        const trimmedLine = line.trim();
+        const isIndented = line.startsWith('  ') || line.startsWith('\t');
+        const hasColon = line.includes(':') && !isIndented;
+
+        // Handle multi-line continuation (indented lines that aren't list items)
+        if (isIndented && !trimmedLine.startsWith('-') && inMultiLine && currentKey) {
+            currentValue += ' ' + trimmedLine;
+            return;
+        }
+
+        // Save previous multi-line value
+        if (inMultiLine && currentKey && currentValue) {
+            frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '');
+            currentKey = null;
+            currentValue = '';
+            inMultiLine = false;
+        }
+
+        // Check if starting a new key
+        if (hasColon && !trimmedLine.startsWith('-')) {
+            // Save any pending list
             if (inList && currentKey) {
                 frontMatter[currentKey] = currentList;
                 currentList = [];
@@ -32,20 +53,26 @@ function parseFrontMatter(content) {
             let value = line.substring(colonIndex + 1).trim();
 
             if (value === '') {
+                // Could be a list or empty value
                 inList = true;
             } else {
-                value = value.replace(/^["']|["']$/g, '');
-                frontMatter[currentKey] = value;
-                currentKey = null;
+                // Check if value might continue on next line
+                inMultiLine = true;
+                currentValue = value;
             }
-        } else if (line.trim().startsWith('-') && inList) {
+        } else if (trimmedLine.startsWith('-') && inList) {
             // Parse list items (skills)
-            const match = line.match(/- skill: ["']?(.+?)["']?$/);
-            if (match) {
-                currentList.push(match[1]);
+            const listMatch = trimmedLine.match(/- skill: ["']?(.+?)["']?$/);
+            if (listMatch) {
+                currentList.push(listMatch[1]);
             }
         }
     });
+
+    // Handle final multi-line value
+    if (inMultiLine && currentKey && currentValue) {
+        frontMatter[currentKey] = currentValue.replace(/^["']|["']$/g, '');
+    }
 
     // Handle final list
     if (inList && currentKey) {

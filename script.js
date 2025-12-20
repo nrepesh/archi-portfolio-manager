@@ -114,9 +114,25 @@ async function loadAboutPage() {
                 }
             }
 
-            const linkedinLink = document.querySelector('a[href*="linkedin"]');
+            const linkedinLink = document.getElementById('linkedin-link');
             if (linkedinLink && contact.linkedin) {
                 linkedinLink.href = contact.linkedin;
+            }
+
+            // Update phone link (show only if phone number exists)
+            const phoneLink = document.getElementById('phone-link');
+            if (phoneLink && contact.phone) {
+                phoneLink.href = 'tel:' + contact.phone.replace(/\s/g, '');
+                document.getElementById('phone-text').textContent = contact.phone;
+                phoneLink.style.display = 'flex';
+            }
+
+            // Update other link (show only if URL and label exist)
+            const otherLink = document.getElementById('other-link');
+            if (otherLink && contact.other_url && contact.other_label) {
+                otherLink.href = contact.other_url;
+                document.getElementById('other-link-text').textContent = contact.other_label;
+                otherLink.style.display = 'flex';
             }
         }
 
