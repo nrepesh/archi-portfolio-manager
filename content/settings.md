@@ -1,6 +1,6 @@
 ---
-site_title: Architecture Portfolio
-hero_title: Architectural Engineering
-hero_subtitle: Designing sustainable spaces in harmony with nature
-copyright: All rights reserved.
+site_title: Nitica Joshi - Architecture Portfolio
+hero_title: Architecture Portfolio
+hero_subtitle: Creating thoughtful spaces through innovative design and technical precision
+copyright: Nitica Joshi. All rights reserved.
 ---
