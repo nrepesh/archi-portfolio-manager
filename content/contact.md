@@ -1,6 +1,7 @@
 ---
-email: hello@reallygreatsite.com
-phone: "+123-456-7890"
-address: 123 Anywhere ST., Any City, ST 12345
-linkedin: https://linkedin.com/in/yourprofile
+email: rajeshramjoshi@gmail.com
+phone: "+977-1-5421747"
+address: Nepal
+linkedin: https://linkedin.com/in/rajesh-joshi
+availability: Full-time On-site (Nepal) | Short-term International Consulting with Travel Flexibility
 ---
